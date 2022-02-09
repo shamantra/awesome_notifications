@@ -75,15 +75,13 @@ import me.carda.awesome_notifications.utils.MapUtils;
 import me.carda.awesome_notifications.utils.MediaUtils;
 import me.carda.awesome_notifications.utils.StringUtils;
 
-
 import me.carda.awesome_notifications.services.ForegroundService;
 
 /**
  * AwesomeNotificationsPlugin
  **/
-public class AwesomeNotificationsPlugin
-        extends BroadcastReceiver
-        implements FlutterPlugin, MethodCallHandler, PluginRegistry.NewIntentListener, ActivityAware, ActivityLifecycleCallbacks {
+public class AwesomeNotificationsPlugin extends BroadcastReceiver implements FlutterPlugin, MethodCallHandler,
+        PluginRegistry.NewIntentListener, ActivityAware, ActivityLifecycleCallbacks {
 
     public static Boolean debug = false;
 
@@ -105,7 +103,7 @@ public class AwesomeNotificationsPlugin
 
     @Override
     public boolean onNewIntent(Intent intent) {
-        //Log.d(TAG, "onNewIntent called");
+        // Log.d(TAG, "onNewIntent called");
         return receiveNotificationAction(intent);
     }
 
@@ -116,26 +114,16 @@ public class AwesomeNotificationsPlugin
 
         awesomeNotificationsPlugin.initialActivity = registrar.activity();
 
-        awesomeNotificationsPlugin.AttachAwesomeNotificationsPlugin(
-                registrar.context(),
-                new MethodChannel(
-                        registrar.messenger(),
-                        Definitions.CHANNEL_FLUTTER_PLUGIN
-                )
-        );
+        awesomeNotificationsPlugin.AttachAwesomeNotificationsPlugin(registrar.context(),
+                new MethodChannel(registrar.messenger(), Definitions.CHANNEL_FLUTTER_PLUGIN));
     }
 
     // FOR NEWER FLUTTER VERSIONS (1.12 releases and above)
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
 
-        AttachAwesomeNotificationsPlugin(
-                flutterPluginBinding.getApplicationContext(),
-                new MethodChannel(
-                        flutterPluginBinding.getBinaryMessenger(),
-                        Definitions.CHANNEL_FLUTTER_PLUGIN
-                )
-        );
+        AttachAwesomeNotificationsPlugin(flutterPluginBinding.getApplicationContext(),
+                new MethodChannel(flutterPluginBinding.getBinaryMessenger(), Definitions.CHANNEL_FLUTTER_PLUGIN));
     }
 
     private void AttachAwesomeNotificationsPlugin(Context context, MethodChannel channel) {
@@ -152,7 +140,6 @@ public class AwesomeNotificationsPlugin
         intentFilter.addAction(Definitions.BROADCAST_DISPLAYED_NOTIFICATION);
         intentFilter.addAction(Definitions.BROADCAST_DISMISSED_NOTIFICATION);
         intentFilter.addAction(Definitions.BROADCAST_KEEP_ON_TOP);
-        intentFilter.addAction(Definitions.BROADCAST_MEDIA_BUTTON);
 
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(applicationContext);
         manager.registerReceiver(this, intentFilter);
@@ -232,30 +219,25 @@ public class AwesomeNotificationsPlugin
             String action = intent.getAction();
             switch (action) {
 
-                case Definitions.BROADCAST_CREATED_NOTIFICATION:
-                    onBroadcastNotificationCreated(intent);
-                    return;
+            case Definitions.BROADCAST_CREATED_NOTIFICATION:
+                onBroadcastNotificationCreated(intent);
+                return;
 
-                case Definitions.BROADCAST_DISPLAYED_NOTIFICATION:
-                    onBroadcastNotificationDisplayed(intent);
-                    return;
+            case Definitions.BROADCAST_DISPLAYED_NOTIFICATION:
+                onBroadcastNotificationDisplayed(intent);
+                return;
 
-                case Definitions.BROADCAST_DISMISSED_NOTIFICATION:
-                    onBroadcastNotificationDismissed(intent);
-                    return;
+            case Definitions.BROADCAST_DISMISSED_NOTIFICATION:
+                onBroadcastNotificationDismissed(intent);
+                return;
 
-                case Definitions.BROADCAST_KEEP_ON_TOP:
-                    onBroadcastKeepOnTopActionNotification(intent);
-                    return;
+            case Definitions.BROADCAST_KEEP_ON_TOP:
+                onBroadcastKeepOnTopActionNotification(intent);
+                return;
 
-                case Definitions.BROADCAST_MEDIA_BUTTON:
-                    onBroadcastMediaButton(intent);
-                    return;
-
-                default:
-                    if (AwesomeNotificationsPlugin.debug)
-                        Log.d(TAG, "Received unknown action: " + (
-                                StringUtils.isNullOrEmpty(action) ? "empty" : action));
+            default:
+                if (AwesomeNotificationsPlugin.debug)
+                    Log.d(TAG, "Received unknown action: " + (StringUtils.isNullOrEmpty(action) ? "empty" : action));
 
             }
         } catch (Exception e) {
@@ -271,7 +253,8 @@ public class AwesomeNotificationsPlugin
 
         @SuppressWarnings("unchecked")
         Map<String, Object> content = (serializable instanceof Map ? (Map<String, Object>) serializable : null);
-        if (content == null) return;
+        if (content == null)
+            return;
 
         NotificationReceived received = new NotificationReceived().fromMap(content);
         received.validate(applicationContext);
@@ -299,19 +282,6 @@ public class AwesomeNotificationsPlugin
         }
     }
 
-    private void onBroadcastMediaButton(Intent intent) throws AwesomeNotificationException {
-        try {
-            Serializable serializable = intent.getSerializableExtra(Definitions.EXTRA_BROADCAST_MESSAGE);
-            pluginChannel.invokeMethod(Definitions.CHANNEL_METHOD_MEDIA_BUTTON, serializable);
-
-            if (AwesomeNotificationsPlugin.debug)
-                Log.d(TAG, "Notification action received");
-
-        } catch (Exception e) {
-            throw new AwesomeNotificationException(e.getMessage());
-        }
-    }
-
     private void onBroadcastNotificationDisplayed(Intent intent) throws AwesomeNotificationException {
         try {
 
@@ -319,7 +289,8 @@ public class AwesomeNotificationsPlugin
 
             @SuppressWarnings("unchecked")
             Map<String, Object> content = (serializable instanceof Map ? (Map<String, Object>) serializable : null);
-            if (content == null) return;
+            if (content == null)
+                return;
 
             NotificationReceived received = new NotificationReceived().fromMap(content);
             received.validate(applicationContext);
@@ -344,7 +315,8 @@ public class AwesomeNotificationsPlugin
 
             @SuppressWarnings("unchecked")
             Map<String, Object> content = (serializable instanceof Map ? (Map<String, Object>) serializable : null);
-            if (content == null) return;
+            if (content == null)
+                return;
 
             ActionReceived received = new ActionReceived().fromMap(content);
             received.validate(applicationContext);
@@ -434,152 +406,152 @@ public class AwesomeNotificationsPlugin
 
             switch (call.method) {
 
-                case Definitions.CHANNEL_METHOD_INITIALIZE:
-                    channelMethodInitialize(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_INITIALIZE:
+                channelMethodInitialize(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_GET_DRAWABLE_DATA:
-                    channelMethodGetDrawableData(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_GET_DRAWABLE_DATA:
+                channelMethodGetDrawableData(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_ENABLE_WAKELOCK:
-                    channelMethodGetPlatformVersion(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_ENABLE_WAKELOCK:
+                channelMethodGetPlatformVersion(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_IS_NOTIFICATION_ALLOWED:
-                    channelIsNotificationAllowed(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_IS_NOTIFICATION_ALLOWED:
+                channelIsNotificationAllowed(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_SHOW_NOTIFICATION_PAGE:
-                    channelShowNotificationPage(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_SHOW_NOTIFICATION_PAGE:
+                channelShowNotificationPage(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_SHOW_ALARM_PAGE:
-                    channelShowAlarmPage(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_SHOW_ALARM_PAGE:
+                channelShowAlarmPage(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_SHOW_GLOBAL_DND_PAGE:
-                    channelShowGlobalDndPage(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_SHOW_GLOBAL_DND_PAGE:
+                channelShowGlobalDndPage(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CHECK_PERMISSIONS:
-                    channelMethodCheckPermissions(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CHECK_PERMISSIONS:
+                channelMethodCheckPermissions(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_SHOULD_SHOW_RATIONALE:
-                    channelMethodShouldShowRationale(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_SHOULD_SHOW_RATIONALE:
+                channelMethodShouldShowRationale(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_REQUEST_NOTIFICATIONS:
-                    channelRequestNotification(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_REQUEST_NOTIFICATIONS:
+                channelRequestNotification(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CREATE_NOTIFICATION:
-                    channelMethodCreateNotification(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CREATE_NOTIFICATION:
+                channelMethodCreateNotification(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_LIST_ALL_SCHEDULES:
-                    channelMethodListAllSchedules(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_LIST_ALL_SCHEDULES:
+                channelMethodListAllSchedules(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_GET_NEXT_DATE:
-                    channelMethodGetNextDate(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_GET_NEXT_DATE:
+                channelMethodGetNextDate(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_GET_LOCAL_TIMEZONE_IDENTIFIER:
-                    channelMethodGetLocalTimeZone(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_GET_LOCAL_TIMEZONE_IDENTIFIER:
+                channelMethodGetLocalTimeZone(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_GET_UTC_TIMEZONE_IDENTIFIER:
-                    channelMethodGetUtcTimeZone(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_GET_UTC_TIMEZONE_IDENTIFIER:
+                channelMethodGetUtcTimeZone(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_SET_NOTIFICATION_CHANNEL:
-                    channelMethodSetChannel(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_SET_NOTIFICATION_CHANNEL:
+                channelMethodSetChannel(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_REMOVE_NOTIFICATION_CHANNEL:
-                    channelMethodRemoveChannel(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_REMOVE_NOTIFICATION_CHANNEL:
+                channelMethodRemoveChannel(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_GET_BADGE_COUNT:
-                    channelMethodGetBadgeCounter(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_GET_BADGE_COUNT:
+                channelMethodGetBadgeCounter(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_SET_BADGE_COUNT:
-                    channelMethodSetBadgeCounter(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_SET_BADGE_COUNT:
+                channelMethodSetBadgeCounter(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_INCREMENT_BADGE_COUNT:
-                    channelMethodIncrementBadge(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_INCREMENT_BADGE_COUNT:
+                channelMethodIncrementBadge(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_DECREMENT_BADGE_COUNT:
-                    channelMethodDecrementBadge(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_DECREMENT_BADGE_COUNT:
+                channelMethodDecrementBadge(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_RESET_BADGE:
-                    channelMethodResetBadge(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_RESET_BADGE:
+                channelMethodResetBadge(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_DISMISS_NOTIFICATION:
-                    channelMethodDismissNotification(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_DISMISS_NOTIFICATION:
+                channelMethodDismissNotification(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CANCEL_NOTIFICATION:
-                    channelMethodCancelNotification(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CANCEL_NOTIFICATION:
+                channelMethodCancelNotification(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CANCEL_SCHEDULE:
-                    channelMethodCancelSchedule(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CANCEL_SCHEDULE:
+                channelMethodCancelSchedule(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_DISMISS_NOTIFICATIONS_BY_CHANNEL_KEY:
-                    channelMethodDismissNotificationsByChannelKey(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_DISMISS_NOTIFICATIONS_BY_CHANNEL_KEY:
+                channelMethodDismissNotificationsByChannelKey(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CANCEL_SCHEDULES_BY_CHANNEL_KEY:
-                    channelMethodCancelSchedulesByChannelKey(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CANCEL_SCHEDULES_BY_CHANNEL_KEY:
+                channelMethodCancelSchedulesByChannelKey(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CANCEL_NOTIFICATIONS_BY_CHANNEL_KEY:
-                    channelMethodCancelNotificationsByChannelKey(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CANCEL_NOTIFICATIONS_BY_CHANNEL_KEY:
+                channelMethodCancelNotificationsByChannelKey(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_DISMISS_NOTIFICATIONS_BY_GROUP_KEY:
-                    channelMethodDismissNotificationsByGroupKey(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_DISMISS_NOTIFICATIONS_BY_GROUP_KEY:
+                channelMethodDismissNotificationsByGroupKey(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CANCEL_SCHEDULES_BY_GROUP_KEY:
-                    channelMethodCancelSchedulesByGroupKey(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CANCEL_SCHEDULES_BY_GROUP_KEY:
+                channelMethodCancelSchedulesByGroupKey(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CANCEL_NOTIFICATIONS_BY_GROUP_KEY:
-                    channelMethodCancelNotificationsByGroupKey(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CANCEL_NOTIFICATIONS_BY_GROUP_KEY:
+                channelMethodCancelNotificationsByGroupKey(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_DISMISS_ALL_NOTIFICATIONS:
-                    channelMethodDismissAllNotifications(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_DISMISS_ALL_NOTIFICATIONS:
+                channelMethodDismissAllNotifications(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CANCEL_ALL_SCHEDULES:
-                    channelMethodCancelAllSchedules(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CANCEL_ALL_SCHEDULES:
+                channelMethodCancelAllSchedules(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_CANCEL_ALL_NOTIFICATIONS:
-                    channelMethodCancelAllNotifications(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_CANCEL_ALL_NOTIFICATIONS:
+                channelMethodCancelAllNotifications(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_START_FOREGROUND:
-                    channelMethodStartForeground(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_START_FOREGROUND:
+                channelMethodStartForeground(call, result);
+                return;
 
-                case Definitions.CHANNEL_METHOD_STOP_FOREGROUND:
-                    channelMethodStopForeground(call, result);
-                    return;
+            case Definitions.CHANNEL_METHOD_STOP_FOREGROUND:
+                channelMethodStopForeground(call, result);
+                return;
 
-                default:
-                    result.notImplemented();
+            default:
+                result.notImplemented();
             }
 
         } catch (Exception e) {
@@ -591,19 +563,22 @@ public class AwesomeNotificationsPlugin
         }
     }
 
-    private void channelMethodStartForeground(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
-        // We don't do any checks here if the notification channel belonging to the notification is disabled
+    private void channelMethodStartForeground(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
+        // We don't do any checks here if the notification channel belonging to the
+        // notification is disabled
         // because for an foreground service, it doesn't matter
         Map<String, Object> notificationData = call.<Map<String, Object>>argument("notificationData");
         Integer startType = call.<Integer>argument("startType");
         Boolean hasForegroundServiceType = call.<Boolean>argument("hasForegroundServiceType");
         Integer foregroundServiceType = call.<Integer>argument("foregroundServiceType");
-        if (notificationData != null && startType != null && hasForegroundServiceType != null && foregroundServiceType != null) {
-            ForegroundService.StartParameter parameter =
-                    new ForegroundService.StartParameter(applicationContext, notificationData, startType, hasForegroundServiceType, foregroundServiceType);
+        if (notificationData != null && startType != null && hasForegroundServiceType != null
+                && foregroundServiceType != null) {
+            ForegroundService.StartParameter parameter = new ForegroundService.StartParameter(applicationContext,
+                    notificationData, startType, hasForegroundServiceType, foregroundServiceType);
             Intent intent = new Intent(applicationContext, ForegroundService.class);
             intent.putExtra(ForegroundService.StartParameter.EXTRA, parameter);
-            if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.O /*Android 8*/) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O /* Android 8 */) {
                 applicationContext.startForegroundService(intent);
             } else {
                 applicationContext.startService(intent);
@@ -619,28 +594,29 @@ public class AwesomeNotificationsPlugin
         result.success(null);
     }
 
-    private void channelMethodGetDrawableData(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodGetDrawableData(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         String bitmapReference = call.arguments();
 
-        BitmapResourceDecoder bitmapResourceDecoder = new BitmapResourceDecoder(
-                applicationContext,
-                result,
-                bitmapReference
-        );
+        BitmapResourceDecoder bitmapResourceDecoder = new BitmapResourceDecoder(applicationContext, result,
+                bitmapReference);
 
         bitmapResourceDecoder.execute();
     }
 
-    private void channelMethodGetPlatformVersion(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
-        result.success("Android-"+String.valueOf(Build.VERSION.SDK_INT));
+    private void channelMethodGetPlatformVersion(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
+        result.success("Android-" + String.valueOf(Build.VERSION.SDK_INT));
     }
 
-    private void channelMethodEnableWakeLock(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
-        result.success("Android-"+String.valueOf(Build.VERSION.SDK_INT));
+    private void channelMethodEnableWakeLock(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
+        result.success("Android-" + String.valueOf(Build.VERSION.SDK_INT));
     }
 
-    private void channelMethodListAllSchedules(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodListAllSchedules(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         List<NotificationModel> activeSchedules = ScheduleManager.listSchedules(applicationContext);
         List<Map<String, Object>> listSerialized = new ArrayList<>();
 
@@ -654,7 +630,8 @@ public class AwesomeNotificationsPlugin
         result.success(listSerialized);
     }
 
-    private void channelMethodGetNextDate(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodGetNextDate(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         @SuppressWarnings("unchecked")
         Map<String, Object> data = MapUtils.extractArgument(call.arguments(), Map.class).orNull();
@@ -687,15 +664,18 @@ public class AwesomeNotificationsPlugin
         result.success(finalValidDateString);
     }
 
-    private void channelMethodGetLocalTimeZone(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodGetLocalTimeZone(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         result.success(DateUtils.localTimeZone.getID());
     }
 
-    private void channelMethodGetUtcTimeZone(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodGetUtcTimeZone(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         result.success(DateUtils.utcTimeZone.getID());
     }
 
-    private void channelMethodSetChannel(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodSetChannel(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         @SuppressWarnings("unchecked")
         Map<String, Object> channelData = MapUtils.extractArgument(call.arguments(), Map.class).orNull();
@@ -715,7 +695,8 @@ public class AwesomeNotificationsPlugin
         }
     }
 
-    private void channelMethodRemoveChannel(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodRemoveChannel(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         String channelKey = call.arguments();
 
         if (StringUtils.isNullOrEmpty(channelKey)) {
@@ -737,13 +718,15 @@ public class AwesomeNotificationsPlugin
         }
     }
 
-    private void channelMethodGetBadgeCounter(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodGetBadgeCounter(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         Integer badgeCount = BadgeManager.getGlobalBadgeCounter(applicationContext);
         // Android resets badges automatically when all notifications are cleared
         result.success(badgeCount);
     }
 
-    private void channelMethodSetBadgeCounter(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodSetBadgeCounter(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         @SuppressWarnings("unchecked")
         Integer count = MapUtils.extractArgument(call.arguments(), Integer.class).orNull();
 
@@ -755,22 +738,26 @@ public class AwesomeNotificationsPlugin
         result.success(true);
     }
 
-    private void channelMethodResetBadge(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodResetBadge(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         BadgeManager.resetGlobalBadgeCounter(applicationContext);
         result.success(null);
     }
 
-    private void channelMethodIncrementBadge(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodIncrementBadge(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         Integer badgeCount = BadgeManager.incrementGlobalBadgeCounter(applicationContext);
         result.success(badgeCount);
     }
 
-    private void channelMethodDecrementBadge(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodDecrementBadge(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         Integer badgeCount = BadgeManager.decrementGlobalBadgeCounter(applicationContext);
         result.success(badgeCount);
     }
 
-    private void channelMethodDismissNotification(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodDismissNotification(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         Integer notificationId = call.arguments();
         boolean dismissed = CancellationManager.dismissNotification(applicationContext, notificationId);
@@ -781,7 +768,8 @@ public class AwesomeNotificationsPlugin
         result.success(dismissed);
     }
 
-    private void channelMethodCancelSchedule(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCancelSchedule(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         Integer notificationId = call.arguments();
         boolean dismissed = CancellationManager.cancelSchedule(applicationContext, notificationId);
@@ -792,7 +780,8 @@ public class AwesomeNotificationsPlugin
         result.success(true);
     }
 
-    private void channelMethodCancelNotification(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCancelNotification(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         Integer notificationId = call.arguments();
         boolean dismissed = CancellationManager.cancelNotification(applicationContext, notificationId);
@@ -803,75 +792,87 @@ public class AwesomeNotificationsPlugin
         result.success(true);
     }
 
-    private void channelMethodDismissNotificationsByChannelKey(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodDismissNotificationsByChannelKey(@NonNull final MethodCall call,
+            @NonNull final Result result) throws Exception {
 
         String channelKey = call.arguments();
         boolean dismissed = CancellationManager.dismissNotificationsByChannelKey(applicationContext, channelKey);
 
-        if(AwesomeNotificationsPlugin.debug)
-            Log.d(TAG, "Notifications from channel " + channelKey + (dismissed ? "" : "not found to be") + " dismissed");
+        if (AwesomeNotificationsPlugin.debug)
+            Log.d(TAG,
+                    "Notifications from channel " + channelKey + (dismissed ? "" : "not found to be") + " dismissed");
 
         result.success(true);
     }
 
-    private void channelMethodCancelSchedulesByChannelKey(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCancelSchedulesByChannelKey(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         String channelKey = call.arguments();
         boolean dismissed = CancellationManager.cancelSchedulesByChannelKey(applicationContext, channelKey);
 
         NotificationScheduler.cancelSchedulesByChannelKey(applicationContext, channelKey);
 
-        if(AwesomeNotificationsPlugin.debug)
-            Log.d(TAG, "Scheduled Notifications from channel " + channelKey + (dismissed ? "" : "not found to be") + " canceled");
+        if (AwesomeNotificationsPlugin.debug)
+            Log.d(TAG, "Scheduled Notifications from channel " + channelKey + (dismissed ? "" : "not found to be")
+                    + " canceled");
 
         result.success(true);
     }
 
-    private void channelMethodCancelNotificationsByChannelKey(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCancelNotificationsByChannelKey(@NonNull final MethodCall call,
+            @NonNull final Result result) throws Exception {
 
         String channelKey = call.arguments();
         boolean dismissed = CancellationManager.cancelNotificationsByChannelKey(applicationContext, channelKey);
 
-        if(AwesomeNotificationsPlugin.debug)
-            Log.d(TAG, "Notifications and schedules from channel " + channelKey + (dismissed ? "" : "not found to be") + " canceled");
+        if (AwesomeNotificationsPlugin.debug)
+            Log.d(TAG, "Notifications and schedules from channel " + channelKey + (dismissed ? "" : "not found to be")
+                    + " canceled");
 
         result.success(true);
     }
 
-    private void channelMethodDismissNotificationsByGroupKey(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodDismissNotificationsByGroupKey(@NonNull final MethodCall call,
+            @NonNull final Result result) throws Exception {
 
         String groupKey = call.arguments();
         boolean dismissed = CancellationManager.dismissNotificationsByGroupKey(applicationContext, groupKey);
 
-        if(AwesomeNotificationsPlugin.debug)
+        if (AwesomeNotificationsPlugin.debug)
             Log.d(TAG, "Notifications from group " + groupKey + (dismissed ? "" : "not found to be") + " dismissed");
 
         result.success(true);
     }
 
-    private void channelMethodCancelSchedulesByGroupKey(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCancelSchedulesByGroupKey(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         String groupKey = call.arguments();
         boolean dismissed = CancellationManager.cancelSchedulesByGroupKey(applicationContext, groupKey);
 
-        if(AwesomeNotificationsPlugin.debug)
-            Log.d(TAG, "Scheduled Notifications from group " + groupKey + (dismissed ? "" : "not found to be") + " canceled");
+        if (AwesomeNotificationsPlugin.debug)
+            Log.d(TAG, "Scheduled Notifications from group " + groupKey + (dismissed ? "" : "not found to be")
+                    + " canceled");
 
         result.success(true);
     }
 
-    private void channelMethodCancelNotificationsByGroupKey(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCancelNotificationsByGroupKey(@NonNull final MethodCall call,
+            @NonNull final Result result) throws Exception {
 
         String groupKey = call.arguments();
         boolean dismissed = CancellationManager.cancelNotificationsByGroupKey(applicationContext, groupKey);
 
-        if(AwesomeNotificationsPlugin.debug)
-            Log.d(TAG, "Notifications and schedules from group " + groupKey + (dismissed ? "" : "not found to be") + " canceled");
+        if (AwesomeNotificationsPlugin.debug)
+            Log.d(TAG, "Notifications and schedules from group " + groupKey + (dismissed ? "" : "not found to be")
+                    + " canceled");
 
         result.success(true);
     }
 
-    private void channelMethodDismissAllNotifications(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodDismissAllNotifications(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         CancellationManager.dismissAllNotifications(applicationContext);
 
@@ -881,7 +882,8 @@ public class AwesomeNotificationsPlugin
         result.success(true);
     }
 
-    private void channelMethodCancelAllSchedules(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCancelAllSchedules(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         CancellationManager.cancelAllSchedules(applicationContext);
 
@@ -891,7 +893,8 @@ public class AwesomeNotificationsPlugin
         result.success(true);
     }
 
-    private void channelMethodCancelAllNotifications(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCancelAllNotifications(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         CancellationManager.cancelAllNotifications(applicationContext);
 
@@ -901,69 +904,64 @@ public class AwesomeNotificationsPlugin
         result.success(true);
     }
 
-    private void channelIsNotificationAllowed(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelIsNotificationAllowed(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         result.success(PermissionManager.areNotificationsGloballyAllowed(applicationContext));
     }
 
-    private void channelShowNotificationPage(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelShowNotificationPage(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         String channelKey = call.arguments();
-        if(StringUtils.isNullOrEmpty(channelKey))
-            PermissionManager.showNotificationConfigPage(
-                    applicationContext,
-                    new PermissionCompletionHandler() {
-                        @Override
-                        public void handle(List<String> missingPermissions) {
-                            result.success(missingPermissions);
-                        }
-                    });
+        if (StringUtils.isNullOrEmpty(channelKey))
+            PermissionManager.showNotificationConfigPage(applicationContext, new PermissionCompletionHandler() {
+                @Override
+                public void handle(List<String> missingPermissions) {
+                    result.success(missingPermissions);
+                }
+            });
         else
-            PermissionManager.showChannelConfigPage(
-                    applicationContext,
-                    channelKey,
-                    new PermissionCompletionHandler() {
-                        @Override
-                        public void handle(List<String> missingPermissions) {
-                            result.success(missingPermissions);
-                        }
-                    });
+            PermissionManager.showChannelConfigPage(applicationContext, channelKey, new PermissionCompletionHandler() {
+                @Override
+                public void handle(List<String> missingPermissions) {
+                    result.success(missingPermissions);
+                }
+            });
     }
 
     private void channelShowAlarmPage(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
-        PermissionManager.showPreciseAlarmPage(
-                applicationContext,
-                new PermissionCompletionHandler() {
-                    @Override
-                    public void handle(List<String> missingPermissions) {
-                        result.success(missingPermissions);
-                    }
-                });
+        PermissionManager.showPreciseAlarmPage(applicationContext, new PermissionCompletionHandler() {
+            @Override
+            public void handle(List<String> missingPermissions) {
+                result.success(missingPermissions);
+            }
+        });
     }
 
-    private void channelShowGlobalDndPage(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
-        PermissionManager.showDnDGlobalOverridingPage(
-                applicationContext,
-                new PermissionCompletionHandler() {
-                    @Override
-                    public void handle(List<String> missingPermissions) {
-                        result.success(missingPermissions);
-                    }
-                });
+    private void channelShowGlobalDndPage(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
+        PermissionManager.showDnDGlobalOverridingPage(applicationContext, new PermissionCompletionHandler() {
+            @Override
+            public void handle(List<String> missingPermissions) {
+                result.success(missingPermissions);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
-    private void channelMethodCheckPermissions(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCheckPermissions(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         Map<String, Object> parameters = MapUtils.extractArgument(call.arguments(), Map.class).orNull();
-        if(parameters == null)
+        if (parameters == null)
             throw new AwesomeNotificationException("Parameters are required");
 
         String channelKey = (String) parameters.get(Definitions.NOTIFICATION_CHANNEL_KEY);
         List<String> permissions = (List<String>) parameters.get(Definitions.NOTIFICATION_PERMISSIONS);
 
-        if(permissions == null)
+        if (permissions == null)
             throw new AwesomeNotificationException("Permission list is required");
 
-        if(permissions.isEmpty())
+        if (permissions.isEmpty())
             throw new AwesomeNotificationException("Permission list cannot be empty");
 
         permissions = PermissionManager.arePermissionsAllowed(applicationContext, channelKey, permissions);
@@ -972,19 +970,20 @@ public class AwesomeNotificationsPlugin
     }
 
     @SuppressWarnings("unchecked")
-    private void channelMethodShouldShowRationale(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodShouldShowRationale(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         Map<String, Object> parameters = MapUtils.extractArgument(call.arguments(), Map.class).orNull();
-        if(parameters == null)
+        if (parameters == null)
             throw new AwesomeNotificationException("Parameters are required");
 
         String channelKey = (String) parameters.get(Definitions.NOTIFICATION_CHANNEL_KEY);
         List<String> permissions = (List<String>) parameters.get(Definitions.NOTIFICATION_PERMISSIONS);
 
-        if(permissions == null)
+        if (permissions == null)
             throw new AwesomeNotificationException("Permission list is required");
 
-        if(permissions.isEmpty())
+        if (permissions.isEmpty())
             throw new AwesomeNotificationException("Permission list cannot be empty");
 
         permissions = PermissionManager.shouldShowRationale(applicationContext, channelKey, permissions);
@@ -993,28 +992,25 @@ public class AwesomeNotificationsPlugin
     }
 
     @SuppressWarnings("unchecked")
-    private void channelRequestNotification(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelRequestNotification(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         Map<String, Object> parameters = MapUtils.extractArgument(call.arguments(), Map.class).orNull();
-        if(parameters == null)
+        if (parameters == null)
             throw new AwesomeNotificationException("Parameters are required");
 
-        if(!parameters.containsKey(Definitions.NOTIFICATION_PERMISSIONS))
+        if (!parameters.containsKey(Definitions.NOTIFICATION_PERMISSIONS))
             throw new AwesomeNotificationException("Permission list is required");
 
         String channelKey = (String) parameters.get(Definitions.NOTIFICATION_CHANNEL_KEY);
         List<String> permissions = (List<String>) parameters.get(Definitions.NOTIFICATION_PERMISSIONS);
 
-        if(ListUtils.isNullOrEmpty(permissions))
+        if (ListUtils.isNullOrEmpty(permissions))
             throw new AwesomeNotificationException("Permission list is required");
         assert permissions != null;
 
-        PermissionManager.requestUserPermissions(
-                activityBinding.getActivity(),
-                applicationContext,
-                channelKey,
-                permissions,
-                new PermissionCompletionHandler() {
+        PermissionManager.requestUserPermissions(activityBinding.getActivity(), applicationContext, channelKey,
+                permissions, new PermissionCompletionHandler() {
                     @Override
                     public void handle(List<String> missingPermissions) {
                         result.success(missingPermissions);
@@ -1022,7 +1018,8 @@ public class AwesomeNotificationsPlugin
                 });
     }
 
-    private void channelMethodCreateNotification(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodCreateNotification(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
 
         Map<String, Object> pushData = call.arguments();
         NotificationModel notificationModel = new NotificationModel().fromMap(pushData);
@@ -1037,25 +1034,18 @@ public class AwesomeNotificationsPlugin
 
         if (notificationModel.schedule == null) {
 
-            NotificationSender.send(
-                    applicationContext,
-                    NotificationSource.Local,
-                    notificationModel
-            );
+            NotificationSender.send(applicationContext, NotificationSource.Local, notificationModel);
         } else {
 
-            NotificationScheduler.schedule(
-                    applicationContext,
-                    NotificationSource.Schedule,
-                    notificationModel
-            );
+            NotificationScheduler.schedule(applicationContext, NotificationSource.Schedule, notificationModel);
         }
 
         result.success(true);
     }
 
     @SuppressWarnings("unchecked")
-    private void channelMethodInitialize(@NonNull final MethodCall call, @NonNull final Result result) throws Exception {
+    private void channelMethodInitialize(@NonNull final MethodCall call, @NonNull final Result result)
+            throws Exception {
         List<Object> channelsData, channelGroupsData;
 
         Map<String, Object> platformParameters = call.arguments();
@@ -1067,12 +1057,7 @@ public class AwesomeNotificationsPlugin
         channelsData = (List<Object>) platformParameters.get(Definitions.INITIALIZE_CHANNELS);
         channelGroupsData = (List<Object>) platformParameters.get(Definitions.INITIALIZE_CHANNEL_GROUPS);
 
-        setDefaultConfigurations(
-            applicationContext,
-            defaultIconPath,
-            channelsData,
-            channelGroupsData
-        );
+        setDefaultConfigurations(applicationContext, defaultIconPath, channelsData, channelGroupsData);
 
         if (AwesomeNotificationsPlugin.debug)
             Log.d(TAG, "Awesome Notifications service initialized");
@@ -1080,7 +1065,8 @@ public class AwesomeNotificationsPlugin
         result.success(true);
     }
 
-    private void setDefaultConfigurations(Context context, String defaultIcon, List<Object> channelsData, List<Object> channelGroupsData) throws Exception {
+    private void setDefaultConfigurations(Context context, String defaultIcon, List<Object> channelsData,
+            List<Object> channelGroupsData) throws Exception {
 
         setDefaults(context, defaultIcon);
 
@@ -1095,7 +1081,8 @@ public class AwesomeNotificationsPlugin
     }
 
     private void setChannelGroups(Context context, List<Object> channelGroupsData) throws Exception {
-        if (ListUtils.isNullOrEmpty(channelGroupsData)) return;
+        if (ListUtils.isNullOrEmpty(channelGroupsData))
+            return;
 
         List<NotificationChannelGroupModel> channelGroups = new ArrayList<>();
 
@@ -1121,7 +1108,8 @@ public class AwesomeNotificationsPlugin
     }
 
     private void setChannels(Context context, List<Object> channelsData) throws Exception {
-        if (ListUtils.isNullOrEmpty(channelsData)) return;
+        if (ListUtils.isNullOrEmpty(channelsData))
+            return;
 
         List<NotificationChannelModel> channels = new ArrayList<>();
         boolean forceUpdate = false;
@@ -1202,9 +1190,8 @@ public class AwesomeNotificationsPlugin
 
     private Boolean receiveNotificationAction(Intent intent, NotificationLifeCycle appLifeCycle) {
 
-        ActionReceived actionModel
-            = NotificationBuilder
-                .receiveNotificationAction(applicationContext, intent, appLifeCycle);
+        ActionReceived actionModel = NotificationBuilder.receiveNotificationAction(applicationContext, intent,
+                appLifeCycle);
 
         if (actionModel != null) {
 
@@ -1217,15 +1204,15 @@ public class AwesomeNotificationsPlugin
         return true;
     }
 
-    private void startListeningPermissions(){
-        if(activityBinding != null){
+    private void startListeningPermissions() {
+        if (activityBinding != null) {
             initialActivity = activityBinding.getActivity();
             activityBinding.addRequestPermissionsResultListener(AwesomePermissionHandler.getInstance());
             activityBinding.addActivityResultListener(AwesomePermissionHandler.getInstance());
         }
     }
 
-    private void stopListeningPermissions(){
+    private void stopListeningPermissions() {
         activityBinding.removeRequestPermissionsResultListener(AwesomePermissionHandler.getInstance());
         activityBinding.removeActivityResultListener(AwesomePermissionHandler.getInstance());
         activityBinding = null;

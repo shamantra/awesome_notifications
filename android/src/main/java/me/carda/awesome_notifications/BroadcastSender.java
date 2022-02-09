@@ -16,7 +16,7 @@ public class BroadcastSender {
 
     private static final String TAG = "BroadcastSender";
 
-    public static boolean SendBroadcastNewFcmToken(Context context, String token){
+    public static boolean SendBroadcastNewFcmToken(Context context, String token) {
         boolean success = false;
 
         Intent intent = new Intent(Definitions.BROADCAST_FCM_TOKEN);
@@ -28,7 +28,7 @@ public class BroadcastSender {
         return success;
     }
 
-    public static Boolean SendBroadcastNotificationCreated(Context context, NotificationReceived notificationReceived){
+    public static Boolean SendBroadcastNotificationCreated(Context context, NotificationReceived notificationReceived) {
 
         Boolean success = false;
 
@@ -42,8 +42,8 @@ public class BroadcastSender {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
             success = broadcastManager.sendBroadcast(intent);
 
-            if(success){
-                //Log.d(TAG, "Sent created to broadcast");
+            if (success) {
+                // Log.d(TAG, "Sent created to broadcast");
             }
 
         } catch (Exception e) {
@@ -53,7 +53,7 @@ public class BroadcastSender {
         return success;
     }
 
-    public static Boolean SendBroadcastKeepOnTopAction(Context context, ActionReceived actionReceived){
+    public static Boolean SendBroadcastKeepOnTopAction(Context context, ActionReceived actionReceived) {
 
         Boolean success = false;
 
@@ -65,8 +65,8 @@ public class BroadcastSender {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
             success = broadcastManager.sendBroadcast(intent);
 
-            if(success){
-                //Log.d(TAG, "Sent created to broadcast");
+            if (success) {
+                // Log.d(TAG, "Sent created to broadcast");
             }
 
         } catch (Exception e) {
@@ -76,7 +76,8 @@ public class BroadcastSender {
         return success;
     }
 
-    public static Boolean SendBroadcastNotificationDisplayed(Context context, NotificationReceived notificationReceived){
+    public static Boolean SendBroadcastNotificationDisplayed(Context context,
+            NotificationReceived notificationReceived) {
 
         Boolean success = false;
 
@@ -90,8 +91,8 @@ public class BroadcastSender {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
             success = broadcastManager.sendBroadcast(intent);
 
-            if(success){
-                //Log.d(TAG, "Sent displayed to broadcast");
+            if (success) {
+                // Log.d(TAG, "Sent displayed to broadcast");
             }
 
         } catch (Exception e) {
@@ -101,7 +102,7 @@ public class BroadcastSender {
         return success;
     }
 
-    public static Boolean SendBroadcastNotificationDismissed(Context context, ActionReceived actionReceived){
+    public static Boolean SendBroadcastNotificationDismissed(Context context, ActionReceived actionReceived) {
 
         Boolean success = false;
 
@@ -117,8 +118,8 @@ public class BroadcastSender {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
             success = broadcastManager.sendBroadcast(intent);
 
-            if(success){
-                //Log.d(TAG, "Sent dismissed to broadcast");
+            if (success) {
+                // Log.d(TAG, "Sent dismissed to broadcast");
             }
 
         } catch (Exception e) {
@@ -128,28 +129,4 @@ public class BroadcastSender {
         return success;
     }
 
-    public static Boolean SendBroadcastMediaButton(Context context, ActionReceived actionReceived){
-
-        Boolean success = false;
-
-        Map<String, Object> data = actionReceived.toMap();
-
-        Intent intent = new Intent(Definitions.BROADCAST_MEDIA_BUTTON);
-        intent.putExtra(Definitions.EXTRA_BROADCAST_MESSAGE, (Serializable) data);
-
-        try {
-
-            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
-            success = broadcastManager.sendBroadcast(intent);
-
-            if(success){
-                //Log.d(TAG, "Sent dismissed to broadcast");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return success;
-    }
 }
